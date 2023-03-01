@@ -1,0 +1,77 @@
+---
+- name: Install Docker Compose on Ubuntu
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+        state: present
+
+    - name: Add Docker's official GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository to APT sources
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+        
+    - name: Update repository
+      apt_repository:
+       repo: 'ppa:git-core/ppa'
+       state: present
+
+    - name: Install git
+      apt:
+       name: git
+       state: present
+       update_cache: yes
+
+- name: Pull and execute Docker compose from git repo
+  hosts: all
+  become: yes
+
+  vars: 
+    repo_url: "https://github.com/ValiM92/Assessment.git"
+    repo_path: "/home/valitarget/mytodo"
+    compose_file: "app/docker-compose.yaml"
+  
+  tasks:
+    - name: Clone git repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_path }}"
+
+    - name: Ensure Docker Compose is installed
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Change permission on docker.sock file
+      file:
+        path: /var/run/docker.sock
+        state: file
+        owner: root
+        group: docker
+        mode: 0666
+
+    - name: deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_src: /home/valitarget/mytodo/app
+        files: docker-compose.yaml
