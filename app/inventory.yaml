@@ -9,4 +9,4 @@
         ansible_become_method: sudo
         ansible_become_pass: administrator
     vars:
-      port: "PORT = 5000"
+      port: "PORT = 8000"
