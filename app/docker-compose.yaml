@@ -4,7 +4,7 @@ services:
     command: sh -c "yarn install && yarn run dev"
     ports:
       - "${PORT}:3000"
-    working_dir: /app
+    working_dir: /home/valitarget/mytodo/app
     volumes:
       - ./:/app
     environment:
