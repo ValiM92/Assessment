@@ -15,6 +15,9 @@
           - curl
           - gnupg-agent
           - software-properties-common
+          - python3-pip
+          - python3-setuptools
+          - virtualenv
         state: present
 
     - name: Add Docker's official GPG key
@@ -31,7 +34,7 @@
       apt:
         name: docker-compose
         state: present
-        
+
     - name: Update repository
       apt_repository:
        repo: 'ppa:git-core/ppa'
@@ -47,12 +50,17 @@
   hosts: all
   become: yes
 
-  vars: 
+  vars:
     repo_url: "https://github.com/ValiM92/Assessment.git"
     repo_path: "/home/valitarget/mytodo"
     compose_file: "app/docker-compose.yaml"
-  
+
   tasks:
+    - name: Reset Git repo to origin/master
+      command: git reset --hard
+      args:
+        chdir: /home/valitarget/mytodo/
+
     - name: Clone git repository
       git:
         repo: "{{ repo_url }}"
@@ -63,15 +71,23 @@
         name: docker-compose
         state: present
 
-    - name: Change permission on docker.sock file
-      file:
-        path: /var/run/docker.sock
-        state: file
-        owner: root
-        group: docker
-        mode: 0666
+    - name: Ensure group "docker" exists
+      ansible.builtin.group:
+        name: docker
+        state: present
 
-    - name: deploy Docker Compose stack
+    - name: adding valitarget to docker group
+      user:
+        name: valitarget
+        groups: docker
+        append: yes    
+    - name: Copy module demo
+      copy:
+        content: "{{ port }}"
+        dest: mytodo/app/.env
+
+    - name: Deploy Docker Compose stack
       community.docker.docker_compose:
-        project_src: /home/valitarget/mytodo/app
-        files: docker-compose.yaml
+        project_src: mytodo/app
+        build: yes
+      register: output
