@@ -7,15 +7,15 @@ Programing Assessment
 Instructions :
 
   1. Clone Repo locally
-  2. Run ansible-playbook situated at: ~/Assessment/app
+  2. Check ansible-playbook situated at: ~/Assessment/app
   
           - ansible-playbook docker-playbook.yml -i inventory.yaml --check -vvv
    
-                    actually running
+  3. Run ansible-playbook
 
           - ansible-playbook docker-playbook.yml -i inventory.yaml
           
-  3. RDP into target machine to check container 
+  4. RDP into target machine to check container 
   
           - docker ps
   
