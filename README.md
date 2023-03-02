@@ -9,7 +9,9 @@ Instructions :
   1. Clone Repo locally
   2. Run ansible-playbook situated at: ~/Assessment/app
   
-          - ansible-playbook docker-playbook.yml -i inventory.yaml ( can try with --check first )
+          - ansible-playbook docker-playbook.yml -i inventory.yaml --check -vvv
+
+          - ansible-playbook docker-playbook.yml -i inventory.yaml
           
   3. RDP into target machine to check container 
   
