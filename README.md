@@ -10,6 +10,8 @@ Instructions :
   2. Run ansible-playbook situated at: ~/Assessment/app
   
           - ansible-playbook docker-playbook.yml -i inventory.yaml --check -vvv
+   
+                    actually running
 
           - ansible-playbook docker-playbook.yml -i inventory.yaml
           
